@@ -8,6 +8,7 @@ build-dir = "book"
 [output.html]
 default-theme = "navy"
 additional-css = ["theme/css/chainlink.css"]
+base-url = "/x402-cre-price-alerts/"
 
 [output.html.search]
 enable = true

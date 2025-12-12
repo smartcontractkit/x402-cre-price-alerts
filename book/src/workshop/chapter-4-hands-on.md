@@ -20,27 +20,6 @@ The complete workflow consists of:
 
 All the code patterns you need are covered in Chapter 3. Here, we'll focus on setting up and running the complete system.
 
-## Configuration
-
-```json
-{
-  "schedule": "0 0 * * * *",
-  "ruleTTL": 1800,
-  "publicKey": "0x...",
-  "evms": [
-    {
-      "ruleRegistryAddress": "0x...",
-      "chainSelectorName": "ethereum-testnet-sepolia-base-1",
-      "gasLimit": "1000000",
-      "dataFeeds": {
-        "BTC": "0x0FB99723Aee6f420beAD13e6bBB79b7E6F034298",
-        "ETH": "0x4aDC67696bA383F43DD60A9e78F2C97Fbbfc7cb1",
-        "LINK": "0xb113F5A928BCfF189C998ab20d753a47F9dE5A61"
-      }
-    }
-  ]
-}
-```
 
 ## Complete Demo Sequence
 
@@ -50,15 +29,15 @@ Deploy `contracts/RuleRegistry.sol` to Base Sepolia. Set USDC token address in c
 
 You can use this [Remix IDE](https://remix.ethereum.org/) link for this. 
 
+>💡 Note the deployed contract address, we will use this later.
 
-> [!IMPORTANT]
-> Note the deployed contract address, we will use this later.
+_If you do not have testnet tokens or can't deploy the contract for other reasons, you may use this one `0x9B9fC1EeF6BFC76CD07501Ae81b66f24fAB322B1`. However, keep in mind that this demo contract may be populated with multiple alerts from other developers._
 
 ### Step 1: Clone and Install
 
 ```bash
-git clone <repo_url>
-cd <repo>
+git clone https://github.com/smartcontractkit/x402-cre-price-alerts.git
+cd x402-cre-price-alerts
 npm install
 ```
 
@@ -72,8 +51,7 @@ Create a `.env` file in the **project root** (workspace root):
 cp .env.example .env
 ```
 
-> [!NOTE]
-> The workspace setup uses a single `.env` file at the project root. Both `server` and `cre` workspaces can access environment variables from this root `.env` file. You may specify the `.env` file when using the CRE CLI by passing the `--env` argument.
+> ⚠️ The workspace setup uses a single `.env` file at the project root. Both `server` and `cre` workspaces can access environment variables from this root `.env` file. You may specify the `.env` file when using the CRE CLI by passing the `--env` argument.
 
 Edit `.env` with your values:
 
@@ -297,12 +275,17 @@ Workflow Simulation Result:
 2025-12-10T17:22:54Z [SIMULATION] Skipping WorkflowEngineV2
 ```
 
-> [!NOTE]
-> The cron trigger runs automatically on the configured schedule once deployed. The frequency of the CRON trigger is set within `cre/alerts/config.staging.json`, as well as the Rule TTL.
+>⚠️ The cron trigger runs automatically on the configured schedule once deployed. The frequency of the CRON trigger is set within `cre/alerts/config.staging.json`, as well as the Rule TTL.
 
 ### Step 9: Review the Pushover notification on your device
 
-Check your phone! You should receive a push notification when the price condition is met.
+**🎉 Check your phone!** 
+
+You should receive a push notification when the price condition is met.
+
+<div style="text-align: center;">
+  <img src="../assets/notification.PNG" alt="Push notification screenshot" style="max-width: 50%; height: auto; display: block; margin: 0 auto;" />
+</div>
 
 ### Step 10: (Optional) View balance of x402 Receiver
 
@@ -341,4 +324,7 @@ If you set your x402 Receiver in the root `.env` file (`X402_RECEIVER_ADDRESS`) 
 - Verify `AGENT_WALLET_PRIVATE_KEY` has USDC on Base Sepolia
 - Check `X402_RECEIVER_ADDRESS` is set correctly
 - Verify facilitator URL is accessible
+
+**Gemini API issues?**
+- Rate limit exceeded error? Make sure you set up billing. Free tier for this masterclass is fine, but Google sometimes still requires your credit card is connected to the Gemini API key.
 

@@ -17,10 +17,12 @@ To serve the book locally with live reload:
 
 ```bash
 cd book
-mdbook serve --open
+mdbook serve --open --port 3001
 ```
 
-This will start a local server (usually at `http://localhost:3000`) and automatically reload when you make changes.
+This will start a local server at `http://localhost:3001` and automatically reload when you make changes.
+
+> **Note:** The default port for mdbook is 3000, but we need that port for server. To avoid conflicts with server service, we are using the `--port` flag.
 
 ## Adding Content
 

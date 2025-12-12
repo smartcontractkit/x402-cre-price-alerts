@@ -1,5 +1,5 @@
 {
-  "name": "x402-cre",
+  "name": "@chainlink/x402-cre-price-alerts",
   "version": "1.0.0",
   "private": true,
   "description": "Crypto price alert system using x402 payments, Chainlink CRE, and on-chain smart contracts",
