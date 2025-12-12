@@ -27,7 +27,7 @@ All the code patterns you need are covered in Chapter 3. Here, we'll focus on se
 
 Deploy `contracts/RuleRegistry.sol` to Base Sepolia. Set USDC token address in constructor (Base Sepolia USDC: `0x036CbD53842c5426634e7929541eC2318f3dCF7e`).
 
-You can use this [Remix IDE](https://remix.ethereum.org/) link for this. 
+You can use this [Remix IDE](https://remix.ethereum.org/?#activate=solidity,fileManager&gist=d09b0dabb744eafb373efea72bdc12b2&call=fileManager//open//gist-0fe90e825327ef313c88aedfe66ec142/gridMix4.sol) link for this. 
 
 >💡 Note the deployed contract address, we will use this later.
 
