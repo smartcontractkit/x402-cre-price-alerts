@@ -91,7 +91,11 @@ cre workflow simulate alerts
 
 ## What is x402?
 
-**x402** is a micropayment protocol that enables pay-per-call API access. Instead of subscriptions or API keys, users pay small amounts (like $0.01 USDC) for each API request.
+**x402** (Coinbase's standard for machine-to-machine payments) is a micropayment protocol that enables pay-per-call API access. Instead of subscriptions or API keys, users pay small amounts (like $0.01 USDC) for each API request.
+
+x402 activates the old [HTTP 402 ‘Payment Required’](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/402) status code, which has been marked as ‘reserved for future use’ since the early web. It never really took off because the web had no native, programmable money layer. 
+
+But now, with blockchains and stablecoins, the technology has finally caught up.
 
 ### How x402 Works
 

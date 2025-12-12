@@ -5,7 +5,7 @@
 This book is available at the following url:
 
 ```
-https://chain.link
+https://smartcontractkit.github.io/x402-cre-price-alerts/
 ```
 
 
@@ -17,7 +17,7 @@ To get the most out of this session, we recommend you have the following prepare
 
 - **Node.js v18 or higher** - [Download here](https://nodejs.org/)
 - **BunJs v1.3 or higher** - [Download here](https://bun.com/docs/installation)
-- **Install CRE CLI** - [Installation instructions](https://docs.chain.link/chainlink-runtime-environment/getting-started/installation)
+- **Install CRE CLI** - [Installation instructions](https://docs.chain.link/cre/getting-started/cli-installation)
 - **Add Base Sepolia to your wallet** - [Add network here](https://chainlist.org/chain/84532)
  - **Get ETH from the Coinbase Faucet** - [Coinbase Faucet](https://portal.cdp.coinbase.com/products/faucet) (make sure it's for Base Sepolia!)
 - **Get USDC from the Circle Faucet** - [Circle Faucet](https://faucet.circle.com/) (make sure it's for Base Sepolia!)
@@ -37,8 +37,8 @@ To get the most out of this session, we recommend you have the following prepare
 Once you have the prerequisites ready, clone the repository:
 
 ```bash
-git clone <repository-url>
-cd <repository-name>
+git clone https://github.com/smartcontractkit/x402-cre-price-alerts.git
+cd x402-cre-price-alerts
 npm install
 ```
 

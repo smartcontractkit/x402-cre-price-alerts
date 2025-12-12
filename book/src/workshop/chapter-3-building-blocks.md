@@ -9,8 +9,9 @@ Welcome! In this chapter, we'll build our CRE workflow step by step, starting fr
 When you start a new CRE project, you use the `cre init` command. For this workshop, we're working with an existing project, but let's understand what a fresh CRE project looks like:
 
 ```bash
-cre init my-workflow
-cd cre/my-workflow
+cre init
+cd my-project
+cre workflow simulate my-workflow
 ```
 
 ### Project Structure
@@ -18,7 +19,7 @@ cd cre/my-workflow
 After initialization, a CRE project has this structure:
 
 ```
-cre/
+my-project/
 ├── project.yaml                 # Project-level settings (RPCs, targets)
 ├── secrets.yaml                 # Secret variable mappings
 └── my-workflow/                 # Your workflow directory
@@ -32,9 +33,9 @@ cre/
 
 ### Key Files Explained
 
-**`project.yaml`** - Defines project-wide settings:
+**`project.yaml`** - Defines project-wide settings (UPDATE with Base Sepolia details):
 ```yaml
-local-simulation:
+staging-settings:
   rpcs:
     - chain-name: ethereum-testnet-sepolia-base-1
       url: https://sepolia.base.org
@@ -42,7 +43,7 @@ local-simulation:
 
 **`workflow.yaml`** - Maps targets to workflow files:
 ```yaml
-local-simulation:
+staging-settings:
   user-workflow:
     workflow-name: "my-workflow"
   workflow-artifacts:
@@ -59,7 +60,7 @@ local-simulation:
 
 ### The Runner Pattern
 
-All CRE workflows use the **Runner pattern** to initialize and run workflows. This connects the trigger-and-callback model from Chapter 2:
+All CRE workflows use the **Runner pattern** to initialize and run workflows. This connects the [trigger-and-callback model from Chapter 2](chapter-2-mental-model.md#the-trigger-and-callback-model):
 
 ```typescript
 export async function main() {
@@ -124,14 +125,19 @@ Create `config.json`:
 ### Testing Your First Workflow
 
 ```bash
-cd cre/my-workflow
-cre workflow simulate my-workflow --env ../.env
+cd my-project
+cre workflow simulate my-workflow
 ```
 
-When prompted, select the **Cron trigger** (option 1). You should see:
+You should see:
 
 ```
 [USER LOG] Hello from CRE! Cron trigger fired!
+
+Workflow Simulation Result:
+ "Hello world!"
+
+[SIMULATION] Execution finished signal received
 ```
 
 **🎉 Congratulations!** You've created your first CRE workflow. Notice:
@@ -148,8 +154,17 @@ Now let's add blockchain interaction. We'll read from Chainlink Price Feeds to g
 Add this to your workflow:
 
 ```typescript
-import { cre, getNetwork, encodeCallMsg, bytesToHex } from "@chainlink/cre-sdk";
+import { cre, getNetwork, encodeCallMsg, bytesToHex, Runtime, Runner, LAST_FINALIZED_BLOCK_NUMBER } from "@chainlink/cre-sdk";
 import { encodeFunctionData, decodeFunctionResult, zeroAddress } from "viem";
+
+type EvmConfig = {
+  chainSelectorName: string;
+}
+
+type Config = {
+  schedule: string;
+  evms: EvmConfig[];
+};
 
 // Chainlink Price Feed ABI (simplified)
 const priceFeedAbi = [
@@ -168,13 +183,20 @@ const priceFeedAbi = [
   },
 ] as const;
 
-function onCronTrigger(runtime: Runtime<Config>): string {
+function onCronTrigger(runtime: Runtime<Config>): bigint {
+  // Get the first EVM configuration from the list.
+  const evmConfig = runtime.config.evms[0]
+
   // Get network configuration
   const network = getNetwork({
     chainFamily: "evm",
-    chainSelectorName: "ethereum-testnet-sepolia-base-1",
+    chainSelectorName: evmConfig.chainSelectorName,
     isTestnet: true,
   });
+
+  if (!network) {
+    throw new Error(`Unknown chain name: ${evmConfig.chainSelectorName}`)
+  }
 
   // Create EVM client
   const evmClient = new cre.capabilities.EVMClient(
@@ -189,13 +211,14 @@ function onCronTrigger(runtime: Runtime<Config>): string {
   });
 
   // Execute contract call (with consensus!)
-  const result = evmClient
+  const contractCall = evmClient
     .callContract(runtime, {
       call: encodeCallMsg({
         from: zeroAddress,
         to: "0x0FB99723Aee6f420beAD13e6bBB79b7E6F034298", // BTC/USD feed on Base Sepolia
         data: callData,
       }),
+      blockNumber: LAST_FINALIZED_BLOCK_NUMBER,
     })
     .result();
 
@@ -203,7 +226,7 @@ function onCronTrigger(runtime: Runtime<Config>): string {
   const priceData = decodeFunctionResult({
     abi: priceFeedAbi,
     functionName: "latestRoundData",
-    data: bytesToHex(result.data),
+    data: bytesToHex(contractCall.data),
   }) as [bigint, bigint, bigint, bigint, bigint];
 
   // Convert price (8 decimals)
@@ -211,8 +234,29 @@ function onCronTrigger(runtime: Runtime<Config>): string {
   
   runtime.log(`BTC Price: $${priceUsd.toFixed(2)}`);
   
-  return "Success";
+  return priceData[1];
 }
+
+
+const initWorkflow = (config: Config) => {
+  const cron = new cre.capabilities.CronCapability();
+
+  return [
+    cre.handler(
+      cron.trigger(
+        { schedule: config.schedule }
+      ), 
+      onCronTrigger
+    ),
+  ];
+};
+
+export async function main() {
+  const runner = await Runner.newRunner<Config>();
+  await runner.run(initWorkflow);
+}
+
+main();
 ```
 
 ### Understanding EVM Read
@@ -224,7 +268,9 @@ function onCronTrigger(runtime: Runtime<Config>): string {
 - `callContract()` - Executes read (no gas needed)
 - **Consensus**: Multiple nodes read, results aggregated via BFT
 
-### Update Config
+### Update Config 
+
+_Make sure you added `"ethereum-testnet-sepolia-base-1"` to `project.yaml` already, as desribed above._
 
 ```json
 {
@@ -238,6 +284,15 @@ function onCronTrigger(runtime: Runtime<Config>): string {
 ```
 
 **Test it:** Run the simulation again. You should see the BTC price logged!
+
+```
+[USER LOG] BTC Price: $92325.42
+
+Workflow Simulation Result:
+ 9232542000000
+
+[SIMULATION] Execution finished signal received
+```
 
 ### Reading Multiple Values from Contracts
 
@@ -424,15 +479,36 @@ function onHttpTrigger(
 ### Testing HTTP Trigger
 
 ```bash
-cre workflow simulate my-workflow --env ../.env --broadcast
+cre workflow simulate my-workflow
 ```
 
-Select **HTTP trigger** (option 2), then paste JSON:
+Select **HTTP trigger** (option 2): 
+
+```
+🚀 Workflow simulation ready. Please select a trigger:
+1. cron-trigger@1.0.0 Trigger
+2. http-trigger@1.0.0-alpha Trigger
+
+Enter your choice (1-2): 2
+```
+
+And then paste the following JSON:
 ```json
 {"id": "0x123...", "asset": "BTC", "condition": "gt", "targetPriceUsd": 60000, "createdAt": 1234567890}
 ```
 
 This matches the format our server sends to the CRE workflow.
+
+You should see:
+
+```
+[USER LOG] Received: {"asset":"BTC","condition":"gt","createdAt":1234567890,"id":"0x123...","targetPriceUsd":60000}
+
+Workflow Simulation Result:
+ "Success"
+
+[SIMULATION] Execution finished signal received
+```
 
 ## Step 5: Adding HTTP Client - Making External Calls
 

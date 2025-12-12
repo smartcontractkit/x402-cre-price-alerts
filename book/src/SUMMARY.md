@@ -20,3 +20,8 @@
 # ❓ Q&A
 
 - [Questions & Answers](qa/questions-and-answers.md)
+
+# 🎁 Bonus
+
+- [Prompting in TypeScript](bonus/prompting-typescript.md)
+- [Prompting in Go](bonus/prompting-go.md)

@@ -1,5 +1,13 @@
 # x402-cre: Crypto Price Alert System
 
+## LinkLab Masterclass Book
+
+The book for this repository is available at the following url:
+
+```
+https://smartcontractkit.github.io/x402-cre-price-alerts/
+```
+
 ## Repository Overview
 
 **x402-cre** is a demonstration project that showcases a complete crypto price alert system integrating three cutting-edge technologies:
