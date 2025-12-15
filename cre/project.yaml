@@ -15,6 +15,12 @@
 #       url: "<select your own rpc url>"
 
 # ==========================================================================
+local-simulation:
+  rpcs:
+    - chain-name: ethereum-testnet-sepolia-base-1
+      url: https://sepolia.base.org
+
+# ==========================================================================
 staging-settings:
   rpcs:
     - chain-name: ethereum-testnet-sepolia-base-1

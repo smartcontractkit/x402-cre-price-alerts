@@ -1,6 +1,6 @@
 # Chapter 4: Hands-On Exercise
 
-Now that you understand the building blocks from Chapter 3, let's build our complete price alert workflow. This workflow combines all the capabilities we learned:
+Now that you understand the building blocks from Chapter 3, let's build our complete price alert workflow. This workflow combines all the Capabilities we learned:
 
 1. **HTTP Trigger** - Receives alert data from the server
 2. **EVM Write** - Writes alerts to the RuleRegistry contract
@@ -20,16 +20,15 @@ The complete workflow consists of:
 
 All the code patterns you need are covered in Chapter 3. Here, we'll focus on setting up and running the complete system.
 
-
 ## Complete Demo Sequence
 
 ### Step 0: Deploy RuleRegistry Contract
 
 Deploy `contracts/RuleRegistry.sol` to Base Sepolia. Set USDC token address in constructor (Base Sepolia USDC: `0x036CbD53842c5426634e7929541eC2318f3dCF7e`).
 
-You can use this [Remix IDE](https://remix.ethereum.org/?#activate=solidity,fileManager&gist=d09b0dabb744eafb373efea72bdc12b2&call=fileManager//open//gist-0fe90e825327ef313c88aedfe66ec142/gridMix4.sol) link for this. 
+You can use this <a href="https://remix.ethereum.org/?#activate=solidity,fileManager&gist=d09b0dabb744eafb373efea72bdc12b2&call=fileManager//open//gist-0fe90e825327ef313c88aedfe66ec142/gridMix4.sol" target="_blank" rel="noopener noreferrer">Remix IDE</a> link for this.
 
->💡 Note the deployed contract address, we will use this later.
+> 💡 Note the deployed contract address, we will use this later.
 
 _If you do not have testnet tokens or can't deploy the contract for other reasons, you may use this one `0x9B9fC1EeF6BFC76CD07501Ae81b66f24fAB322B1`. However, keep in mind that this demo contract may be populated with multiple alerts from other developers._
 
@@ -84,7 +83,7 @@ PUSHOVER_API_KEY_VAR=your_pushover_api_key
 
 ### Step 3: Configure CRE Workflow
 
-Edit `cre/alerts/config.staging.json` for staging/testing:
+Edit `cre/alerts/config.staging.json` for staging/testing (add your ruleRegistryAddress):
 
 ```json
 {
@@ -116,7 +115,8 @@ Edit `cre/alerts/config.staging.json` for staging/testing:
 - `gasLimit`: Gas limit for on-chain writes
 - `dataFeeds`: Chainlink price feed addresses for BTC, ETH, LINK on Base Sepolia. You can find Base Sepolia Price Feed addresses [here](https://docs.chain.link/data-feeds/price-feeds/addresses?page=1&testnetPage=1&network=base&networkType=testnet&testnetSearch=).
 
-**Important**: 
+**Important**:
+
 - Replace `your_deployed_rule_registry` with the address from Step 0
 - If you were unable to deploy, you may use `0x9B9fC1EeF6BFC76CD07501Ae81b66f24fAB322B1`. Be aware that this demo contract may be populated with multiple alerts from other developers.
 
@@ -131,6 +131,7 @@ npm run dev:server
 The server will start on `http://localhost:3000` (or your configured PORT).
 
 You should see:
+
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Unified API Server
@@ -157,9 +158,11 @@ Type your message and press Enter (type 'exit' or 'quit' to leave)
 **Option A: Interactive Chat (Recommended)**
 
 In the server terminal, type:
+
 ```
 > Create an alert when BTC is greater than 60000
 ```
+> [!NOTE]: this is deliberately set to below current market price so that the trigger fires.
 
 Type `exit` or `quit` to disable chat (server continues running).
 
@@ -174,6 +177,7 @@ curl -X POST http://localhost:3000/chat \
 ```
 
 **What happens:**
+
 1. Gemini AI interprets your message
 2. Extracts alert parameters (asset, condition, target price)
 3. Creates a paid alert via `/alerts` endpoint with x402 payment
@@ -192,7 +196,7 @@ CRE Workflow Payload (copy for HTTP trigger):
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-### Step 7: Write Alert to Chain (CRE HTTP Trigger)
+### Step 7: Register the Alert in `RuleRegistry` ( using CRE HTTP Trigger)
 
 Open a new terminal window so you can run commands.
 
@@ -204,6 +208,7 @@ cre workflow simulate alerts --env ../.env --broadcast
 ```
 
 When prompted:
+
 1. Select **HTTP trigger** (option 2)
 2. Paste the JSON payload from Step 6
 3. The workflow will write the alert to the RuleRegistry contract on-chain
@@ -231,7 +236,7 @@ Workflow Simulation Result:
 2025-12-10T17:21:22Z [SIMULATION] Skipping WorkflowEngineV2
 ```
 
-### Step 8: Check Price Conditions (CRE Cron Trigger)
+### Step 8: Simulate Cron Check On Price Conditions (using CRE Cron Trigger)
 
 Execute the CRE CRON Trigger to check prices and send notifications:
 
@@ -240,6 +245,7 @@ cre workflow simulate alerts --env ../.env
 ```
 
 When prompted:
+
 1. Select **Cron trigger** (option 1)
 2. The workflow will:
    - Fetch current prices for BTC, ETH, LINK from Chainlink feeds
@@ -275,11 +281,11 @@ Workflow Simulation Result:
 2025-12-10T17:22:54Z [SIMULATION] Skipping WorkflowEngineV2
 ```
 
->⚠️ The cron trigger runs automatically on the configured schedule once deployed. The frequency of the CRON trigger is set within `cre/alerts/config.staging.json`, as well as the Rule TTL.
+> ⚠️ The cron trigger runs automatically on the configured schedule once deployed. The frequency of the CRON trigger is set within `cre/alerts/config.staging.json`, as well as the Rule TTL.
 
 ### Step 9: Review the Pushover notification on your device
 
-**🎉 Check your phone!** 
+**🎉 Check your phone!**
 
 You should receive a push notification when the price condition is met.
 
@@ -308,12 +314,14 @@ If you set your x402 Receiver in the root `.env` file (`X402_RECEIVER_ADDRESS`) 
 ## Troubleshooting
 
 **No notification?**
+
 - Verify Pushover credentials in `.env` (`PUSHOVER_USER_KEY_VAR` and `PUSHOVER_API_KEY_VAR`)
 - Check rule was written to contract (verify transaction hash on Base Sepolia Explorer)
 - Current price must meet condition (e.g., BTC > $60,000 in example)
 - Rule TTL is 30 minutes (1800 seconds) - create new alert if expired
 
 **Workflow errors?**
+
 - Verify contract address in `config.staging.json` matches deployed address
 - Check wallet has ETH for gas (simulation mode)
 - Verify CRE CLI authenticated: `cre auth status`
@@ -321,10 +329,11 @@ If you set your x402 Receiver in the root `.env` file (`X402_RECEIVER_ADDRESS`) 
 - Verify `CRE_TARGET=staging-settings` matches your workflow target configuration
 
 **x402 payment issues?**
+
 - Verify `AGENT_WALLET_PRIVATE_KEY` has USDC on Base Sepolia
 - Check `X402_RECEIVER_ADDRESS` is set correctly
 - Verify facilitator URL is accessible
 
 **Gemini API issues?**
-- Rate limit exceeded error? Make sure you set up billing. Free tier for this masterclass is fine, but Google sometimes still requires your credit card is connected to the Gemini API key.
 
+- Rate limit exceeded error? Make sure you set up billing. Free tier for this masterclass is fine, but Google sometimes still requires your credit card is connected to the Gemini API key.

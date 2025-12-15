@@ -15,6 +15,15 @@
 #     secrets-path: "../secrets.yaml"       # Path to secrets file (project root by default)
 
 # ==========================================================================
+local-simulation:
+  user-workflow:
+    workflow-name: "alerts"
+  workflow-artifacts:
+    workflow-path: "./main.ts"
+    config-path: "./config.staging.json"
+    secrets-path: "../secrets.yaml"
+
+# ==========================================================================
 staging-settings:
   user-workflow:
     workflow-name: "alerts-staging"
@@ -31,4 +40,3 @@ production-settings:
     workflow-path: "./main.ts"
     config-path: "./config.production.json"
     secrets-path: "../secrets.yaml"
-    

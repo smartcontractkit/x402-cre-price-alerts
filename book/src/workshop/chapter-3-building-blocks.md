@@ -1,6 +1,6 @@
 # Chapter 3: Building Blocks - A Progressive Journey
 
-Welcome! In this chapter, we'll build our CRE workflow step by step, starting from scratch. We'll begin with the simplest capability and gradually add more complexity. By the end, you'll have a complete understanding of how CRE workflows work.
+Welcome! In this chapter, we'll build our CRE workflow step by step, starting from scratch. We'll begin with the simplest Capability and gradually add more complexity. By the end, you'll have a complete understanding of how CRE workflows work.
 
 ## Starting Your CRE Project
 
@@ -11,6 +11,7 @@ When you start a new CRE project, you use the `cre init` command. For this works
 ```bash
 cre init
 cd my-project
+bun install --cwd ./my-workflow
 cre workflow simulate my-workflow
 ```
 
@@ -34,6 +35,7 @@ my-project/
 ### Key Files Explained
 
 **`project.yaml`** - Defines project-wide settings (UPDATE with Base Sepolia details):
+
 ```yaml
 staging-settings:
   rpcs:
@@ -42,6 +44,7 @@ staging-settings:
 ```
 
 **`workflow.yaml`** - Maps targets to workflow files:
+
 ```yaml
 staging-settings:
   user-workflow:
@@ -90,13 +93,8 @@ type Config = {
 // Initialize workflow
 const initWorkflow = (config: Config) => {
   const cron = new cre.capabilities.CronCapability();
-  
-  return [
-    cre.handler(
-      cron.trigger({ schedule: config.schedule }),
-      onCronTrigger
-    ),
-  ];
+
+  return [cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger)];
 };
 
 // Callback function
@@ -141,6 +139,7 @@ Workflow Simulation Result:
 ```
 
 **🎉 Congratulations!** You've created your first CRE workflow. Notice:
+
 - The workflow compiled to WASM
 - It ran locally but made real calls (if any)
 - Multiple nodes would execute this in production with consensus
@@ -154,12 +153,20 @@ Now let's add blockchain interaction. We'll read from Chainlink Price Feeds to g
 Add this to your workflow:
 
 ```typescript
-import { cre, getNetwork, encodeCallMsg, bytesToHex, Runtime, Runner, LAST_FINALIZED_BLOCK_NUMBER } from "@chainlink/cre-sdk";
+import {
+  cre,
+  getNetwork,
+  encodeCallMsg,
+  bytesToHex,
+  Runtime,
+  Runner,
+  LAST_FINALIZED_BLOCK_NUMBER,
+} from "@chainlink/cre-sdk";
 import { encodeFunctionData, decodeFunctionResult, zeroAddress } from "viem";
 
 type EvmConfig = {
   chainSelectorName: string;
-}
+};
 
 type Config = {
   schedule: string;
@@ -185,7 +192,7 @@ const priceFeedAbi = [
 
 function onCronTrigger(runtime: Runtime<Config>): bigint {
   // Get the first EVM configuration from the list.
-  const evmConfig = runtime.config.evms[0]
+  const evmConfig = runtime.config.evms[0];
 
   // Get network configuration
   const network = getNetwork({
@@ -195,13 +202,11 @@ function onCronTrigger(runtime: Runtime<Config>): bigint {
   });
 
   if (!network) {
-    throw new Error(`Unknown chain name: ${evmConfig.chainSelectorName}`)
+    throw new Error(`Unknown chain name: ${evmConfig.chainSelectorName}`);
   }
 
   // Create EVM client
-  const evmClient = new cre.capabilities.EVMClient(
-    network.chainSelector.selector
-  );
+  const evmClient = new cre.capabilities.EVMClient(network.chainSelector.selector);
 
   // Encode function call
   const callData = encodeFunctionData({
@@ -231,24 +236,16 @@ function onCronTrigger(runtime: Runtime<Config>): bigint {
 
   // Convert price (8 decimals)
   const priceUsd = Number(priceData[1]) / 10 ** 8;
-  
+
   runtime.log(`BTC Price: $${priceUsd.toFixed(2)}`);
-  
+
   return priceData[1];
 }
-
 
 const initWorkflow = (config: Config) => {
   const cron = new cre.capabilities.CronCapability();
 
-  return [
-    cre.handler(
-      cron.trigger(
-        { schedule: config.schedule }
-      ), 
-      onCronTrigger
-    ),
-  ];
+  return [cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger)];
 };
 
 export async function main() {
@@ -262,13 +259,14 @@ main();
 ### Understanding EVM Read
 
 **Key points:**
+
 - `getNetwork()` - Gets chain configuration
 - `EVMClient` - Client for blockchain interactions
 - `encodeFunctionData()` - Encodes Solidity function calls
 - `callContract()` - Executes read (no gas needed)
 - **Consensus**: Multiple nodes read, results aggregated via BFT
 
-### Update Config 
+### Update Config
 
 _Make sure you added `"ethereum-testnet-sepolia-base-1"` to `project.yaml` already, as desribed above._
 
@@ -370,18 +368,14 @@ function writeAlertToContract(
     isTestnet: true,
   });
 
-  const evmClient = new cre.capabilities.EVMClient(
-    network.chainSelector.selector
-  );
+  const evmClient = new cre.capabilities.EVMClient(network.chainSelector.selector);
 
   // Step 1: Ensure ID has 0x prefix for bytes32
   const idBytes32 = alert.id.startsWith("0x") ? alert.id : `0x${alert.id}`;
 
   // Step 2: Encode your data as ABI parameters
   const reportData = encodeAbiParameters(
-    parseAbiParameters(
-      "bytes32 id, string asset, string condition, uint256 targetPriceUsd, uint256 createdAt"
-    ),
+    parseAbiParameters("bytes32 id, string asset, string condition, uint256 targetPriceUsd, uint256 createdAt"),
     [idBytes32, alert.asset, alert.condition, alert.targetPriceUsd, alert.createdAt]
   );
 
@@ -443,7 +437,7 @@ const initWorkflow = (config: Config) => {
         authorizedKeys: [
           {
             type: "KEY_TYPE_ECDSA_EVM",
-            publicKey: config.publicKey, // Empty string for demo, required for production
+            publicKey: "", // Empty string for demo, required for production
           },
         ],
       }),
@@ -453,25 +447,22 @@ const initWorkflow = (config: Config) => {
 };
 
 // HTTP trigger handler (from httpCallback.ts pattern)
-function onHttpTrigger(
-  runtime: Runtime<Config>,
-  payload: HTTPPayload
-): string {
+function onHttpTrigger(runtime: Runtime<Config>, payload: HTTPPayload): string {
   if (!payload.input || payload.input.length === 0) {
     return "Empty request";
   }
 
   // Decode JSON payload
   const inputData = decodeJson(payload.input);
-  
+
   runtime.log(`Received: ${JSON.stringify(inputData)}`);
-  
+
   // In our actual workflow, we would:
   // 1. Extract alert data (id, asset, condition, targetPriceUsd, createdAt)
   // 2. Encode as ABI parameters
   // 3. Generate CRE report
   // 4. Write to RuleRegistry contract
-  
+
   return "Success";
 }
 ```
@@ -482,7 +473,7 @@ function onHttpTrigger(
 cre workflow simulate my-workflow
 ```
 
-Select **HTTP trigger** (option 2): 
+Select **HTTP trigger** (option 2):
 
 ```
 🚀 Workflow simulation ready. Please select a trigger:
@@ -493,8 +484,9 @@ Enter your choice (1-2): 2
 ```
 
 And then paste the following JSON:
+
 ```json
-{"id": "0x123...", "asset": "BTC", "condition": "gt", "targetPriceUsd": 60000, "createdAt": 1234567890}
+{ "id": "0x123...", "asset": "BTC", "condition": "gt", "targetPriceUsd": 60000, "createdAt": 1234567890 }
 ```
 
 This matches the format our server sends to the CRE workflow.
@@ -522,7 +514,7 @@ import { cre, ok, consensusIdenticalAggregation, type HTTPSendRequester } from "
 const httpClient = new cre.capabilities.HTTPClient();
 
 // Example: Sending Pushover notification (from cronCallback.ts)
-const sendPushoverNotification = 
+const sendPushoverNotification =
   (message: string, title: string, apiToken: string, userId: string) =>
   (sendRequester: HTTPSendRequester, config: Config) => {
     const payload = {
@@ -550,7 +542,7 @@ const sendPushoverNotification =
     };
 
     const resp = sendRequester.sendRequest(req).result();
-    
+
     if (!ok(resp)) {
       throw new Error(`Request failed: ${resp.statusCode}`);
     }
@@ -561,7 +553,7 @@ const sendPushoverNotification =
     if (responseBody.status !== 1) {
       throw new Error(`API returned error: ${JSON.stringify(responseBody)}`);
     }
-    
+
     return { statusCode: resp.statusCode };
   };
 
@@ -609,9 +601,9 @@ app.use(
         price: "$0.01",
         network: "base-sepolia",
         config: {
-          description: "Create a crypto price alert"
-        }
-      }
+          description: "Create a crypto price alert",
+        },
+      },
     },
     { url: "https://x402.org/facilitator" }
   )
@@ -620,7 +612,7 @@ app.use(
 // /alerts endpoint handler (from server.ts)
 app.post("/alerts", (req, res) => {
   // Payment already validated by middleware!
-  
+
   // Create alert with deterministic ID
   const alertData = {
     asset: req.body.asset,
@@ -629,16 +621,14 @@ app.post("/alerts", (req, res) => {
     createdAt: Math.floor(Date.now() / 1000),
   };
 
-  const id = createHash("sha256")
-    .update(JSON.stringify(alertData))
-    .digest("hex");
+  const id = createHash("sha256").update(JSON.stringify(alertData)).digest("hex");
 
   const alert = { id, ...alertData };
 
   // Output CRE workflow payload (for manual trigger in demo)
   console.log("\nCRE Workflow Payload (copy for HTTP trigger):");
   console.log(JSON.stringify(alert));
-  
+
   res.json({ success: true, alert });
 });
 ```
@@ -697,6 +687,7 @@ This demonstrates how x402 (micropayments) and CRE (decentralized workflows) wor
 ## Putting It All Together
 
 Now you understand the complete picture:
+
 - **Cron Trigger** - Scheduled execution
 - **EVM Read** - Reading from blockchains (with consensus)
 - **EVM Write** - Writing to blockchains (two-step pattern)
@@ -704,4 +695,4 @@ Now you understand the complete picture:
 - **HTTP Client** - Making external API calls (with consensus)
 - **x402 Integration** - Payment-protected API that triggers CRE workflows
 
-In the next chapter, we'll set up and run the complete price alert system using all these capabilities together!
+In the next chapter, we'll set up and run the complete price alert system using all these Capabilities together!

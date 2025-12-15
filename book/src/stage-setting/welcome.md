@@ -26,7 +26,7 @@ LinkedIn: [Nolan Edwards](https://www.linkedin.com/in/nolanje/)
 
 ### 🔥 Fireside Chat
 
-Join **Aakar Shroff** (VP of Product, Chainlink Labs) and **Erik Reppel** (Head of Engineering, Base) for an engaging conversation about CRE and x402, and how these technologies work together to enable new models for decentralized applications.
+Join **Aakar Shroff** (VP of Product, Chainlink Labs) and **Erik Reppel** (Head of Engineering, Coinbase Developer Platform & Co-author of x402 whitepaper) for an engaging conversation about CRE and x402, and how these technologies work together to enable new models for decentralized applications.
 
 ### 🛠️ Hands-On Workshop
 
