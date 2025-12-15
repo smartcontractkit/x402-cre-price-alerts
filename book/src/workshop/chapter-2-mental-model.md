@@ -14,13 +14,13 @@ Before we dive into building, let's establish the mental model for the two core 
 
 - Each workflow is orchestrated by a **Workflow DON** that monitors for triggers and coordinates execution
 
-- The workflow can invoke specialized **CapabilityDONs**—for example, one that fetches offchain data or one that writes to a chain
+- The workflow can invoke specialized **Capability DONs**—for example, one that fetches offchain data or one that writes to a chain
 
 - During execution, each node in a DON performs the requested task independently
 
 - Their results are then cryptographically verified and aggregated via a **Byzantine Fault Tolerant (BFT) consensus protocol**, guaranteeing a single, correct, and consistent outcome
 
-**Capabilities** are modular, decentralized services that performs a specific task, and each Capabilityis powered by its own independent Decentralized Oracle Network (DON), which is optimized for that specific task, ensuring security and reliable performance. Currently CRE has the following Capabilities:
+**Capabilities** are modular, decentralized services that performs a specific task, and each Capability is powered by its own independent Decentralized Oracle Network (DON), which is optimized for that specific task, ensuring security and reliable performance. Currently CRE has the following Capabilities:
 
 - Triggers: Event sources that start your workflow executions.
 - HTTP: Fetch and post data from external APIs with decentralized consensus.
@@ -80,7 +80,7 @@ function onCronTrigger(runtime: Runtime<Config>): Record<string, never> {
 
 ### Built-in Consensus
 
-One of CRE's most powerful features is that **every Capabilityexecution automatically includes consensus**. When your workflow invokes a Capability(like fetching data from an API or reading from a blockchain), multiple independent nodes perform the operation. Their results are validated and aggregated through BFT consensus, ensuring a single, verified outcome.
+One of CRE's most powerful features is that **every Capability execution automatically includes consensus**. When your workflow invokes a Capability(like fetching data from an API or reading from a blockchain), multiple independent nodes perform the operation. Their results are validated and aggregated through BFT consensus, ensuring a single, verified outcome.
 
 This means your entire workflow—not just the onchain parts—benefits from the same security and reliability guarantees as blockchain transactions.
 
@@ -303,7 +303,8 @@ Let's walk through the complete flow step by step:
        "targetPriceUsd": 60000
      }
      ```
-  - uses AI tool calling to invoke tool (function) to call the `create_price_alert` tool. This tool invokes `createPriceAlert()` which then contacts the x402 Facilitator using x402's helper functions.
+
+- uses AI tool calling to invoke tool (function) to call the `create_price_alert` tool. This tool invokes `createPriceAlert()` which then contacts the x402 Facilitator using x402's helper functions.
 
 3. **x402 payment gate**
 

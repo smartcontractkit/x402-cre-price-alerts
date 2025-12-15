@@ -1,6 +1,6 @@
 # Chapter 3: Building Blocks - A Progressive Journey
 
-Welcome! In this chapter, we'll build our CRE workflow step by step, starting from scratch. We'll begin with the simplest Capabilityand gradually add more complexity. By the end, you'll have a complete understanding of how CRE workflows work.
+Welcome! In this chapter, we'll build our CRE workflow step by step, starting from scratch. We'll begin with the simplest Capability and gradually add more complexity. By the end, you'll have a complete understanding of how CRE workflows work.
 
 ## Starting Your CRE Project
 
