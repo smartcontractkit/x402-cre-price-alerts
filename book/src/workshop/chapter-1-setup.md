@@ -55,7 +55,12 @@ This will open a browser window for you to authenticate. Once authenticated, you
 
 ![img](../assets/cre-successful-login.png)
 
-## What's Next?
+Check your login status and account details with:
+```bash
+cre whoami
+```
+
+## What's Now Possible?
 
 Now that your CRE environment is set up, you can:
 

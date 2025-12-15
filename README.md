@@ -79,7 +79,7 @@ Before starting, ensure you have the following:
 
 Deploy `contracts/RuleRegistry.sol` to Base Sepolia. Set USDC token address in constructor (Base Sepolia USDC: `0x036CbD53842c5426634e7929541eC2318f3dCF7e`).
 
-You can use this [Remix IDE](https://remix.ethereum.org/?#activate=solidity,fileManager&gist=d09b0dabb744eafb373efea72bdc12b2&call=fileManager//open//gist-0fe90e825327ef313c88aedfe66ec142/gridMix4.sol) link for this. 
+You can use this <a href="https://remix.ethereum.org/?#activate=solidity,fileManager&gist=d09b0dabb744eafb373efea72bdc12b2&call=fileManager//open//gist-0fe90e825327ef313c88aedfe66ec142/gridMix4.sol" target="_blank" rel="noopener noreferrer">Remix IDE</a> link for this.
 
 > [!IMPORTANT]
 > Note the deployed contract address, we will use this later.
@@ -227,6 +227,7 @@ Send a message to create your alert:
 ```
 > Create an alert when BTC is greater than 60000
 ```
+> [!NOTE]: this is deliberately set to below current market price so that the trigger fires.
 
 Type `exit` or `quit` to disable chat (server continues running).
 
@@ -349,7 +350,6 @@ Workflow Simulation Result:
 
 > [!NOTE]
 > The cron trigger runs automatically on the configured schedule once deployed. The frequency of the CRON trigger is set within `cre/alerts/config.staging.json`, as well as the Rule TTL.
-
 
 ### Step 6: Review the Pushover notification on your device
 

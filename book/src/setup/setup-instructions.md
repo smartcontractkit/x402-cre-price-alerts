@@ -42,3 +42,5 @@ cd x402-cre-price-alerts
 npm install
 ```
 
+Note that the project uses NPM workspaces, so you must use NPM to install packages.
+
