@@ -11,6 +11,7 @@ When you start a new CRE project, you use the `cre init` command. For this works
 ```bash
 cre init
 cd my-project
+bun install --cwd ./my-workflow
 cre workflow simulate my-workflow
 ```
 
@@ -436,7 +437,7 @@ const initWorkflow = (config: Config) => {
         authorizedKeys: [
           {
             type: "KEY_TYPE_ECDSA_EVM",
-            publicKey: config.publicKey, // Empty string for demo, required for production
+            publicKey: "", // Empty string for demo, required for production
           },
         ],
       }),

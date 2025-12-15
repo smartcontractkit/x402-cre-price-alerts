@@ -26,7 +26,7 @@ Before we dive into building, let's establish the mental model for the two core 
 - HTTP: Fetch and post data from external APIs with decentralized consensus.
 - EVM Read & Write: Interact with smart contracts on EVM-compatible blockchains with decentralized consensus.
 
-You can read more about all of these[here](https://docs.chain.link/cre/capabilities).
+You can read more about all of these [here](https://docs.chain.link/cre/capabilities).
 
 ### What You Can Do with CRE
 
@@ -80,7 +80,7 @@ function onCronTrigger(runtime: Runtime<Config>): Record<string, never> {
 
 ### Built-in Consensus
 
-One of CRE's most powerful features is that **every Capability execution automatically includes consensus**. When your workflow invokes a Capability(like fetching data from an API or reading from a blockchain), multiple independent nodes perform the operation. Their results are validated and aggregated through BFT consensus, ensuring a single, verified outcome.
+One of CRE's most powerful features is that **every Capability execution automatically includes consensus**. When your workflow invokes a Capability (like fetching data from an API or reading from a blockchain), multiple independent nodes perform the operation. Their results are validated and aggregated through BFT consensus, ensuring a single, verified outcome.
 
 This means your entire workflow—not just the onchain parts—benefits from the same security and reliability guarantees as blockchain transactions.
 
@@ -105,7 +105,7 @@ cre workflow simulate alerts
 
 ## What is x402?
 
-**x402** (Coinbase's standard for machine-to-machine payments) is a micropayment protocol that enables pay-per-call API access. Instead of subscriptions or API keys, users pay small amounts (like $0.01 USDC) for each API request.
+**x402** (Coinbase's standard for machine-to-machine payments) is a micropayment protocol that enables pay-per-call API access. Instead of subscriptions or API keys, users pay small amounts (like 0.01 USDC) for each API request.
 
 x402 activates the old [HTTP 402 ‘Payment Required’](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/402) status code, which has been marked as ‘reserved for future use’ since the early web. It never really took off because the web had no native, programmable money layer.
 
@@ -218,7 +218,7 @@ Now let's see how CRE and x402 work together to build our complete price alert s
 ```
 ┌─────────────┐
 │    User     │
-│  (Browser)  │
+│  (via CLI)  │
 └──────┬──────┘
        │
        │ 1. "Alert me when BTC > $60,000"
