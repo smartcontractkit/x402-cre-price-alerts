@@ -19,3 +19,6 @@ This is Q&A time! Feel free to ask questions about:
 - **CRE Documentation**: [docs.chain.link/cre](https://docs.chain.link/cre) - Comprehensive CRE guides
 - **x402 Documentation**: [docs.cdp.coinbase.com/x402](https://docs.cdp.coinbase.com/x402) - x402 protocol documentation
 
+## Feedback Survey
+
+Your feedback is invaluable in helping us improve future masterclasses and better serve the developer community. Please take a moment to share your thoughts [here](https://forms.gle/Zw3DdG3E73FPNyJY8).
