@@ -1,7 +1,7 @@
 # Questions & Answers
 
 <div style="text-align: center;">
-  <img src="https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/00/4c97caf9-1f73-4335-a5e5-1a37d40d35d3.jpg" style="max-width: 50%; height: auto; display: block; margin: 0 auto;" />
+  <img src="https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/th/dafd0623-664f-4756-a139-a3ce8351d1a1.jpg" style="max-width: 50%; height: auto; display: block; margin: 0 auto;" />
 </div>
 
 
