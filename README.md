@@ -18,6 +18,14 @@ https://smartcontractkit.github.io/x402-cre-price-alerts/
 
 This repository serves as a public demo to help developers understand how to build applications that combine AI-powered interfaces, payment-protected APIs, and blockchain-based automation.
 
+## LiveStreamed LinkLab Walkthrough
+This demo was done live on a Chainlink Linklab Session that was livestreamed.  You can <b>[watch the video and follow along here](https://www.youtube.com/live/r7VKS5L47f0).</b>
+
+
+
+
+
+
 ## What It Accomplishes
 
 The system allows users to create cryptocurrency price alerts through natural language conversation. Here's what happens:
