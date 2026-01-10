@@ -85,7 +85,12 @@ Before starting, ensure you have the following:
 
 ### 0. Deploy RuleRegistry on Base Sepolia
 
-Deploy `contracts/RuleRegistry.sol` to Base Sepolia. Set USDC token address in constructor (Base Sepolia USDC: `0x036CbD53842c5426634e7929541eC2318f3dCF7e`).
+Deploy `contracts/RuleRegistry.sol` to Base Sepolia. The constructor requires two parameters:
+1. **USDC token address**: `0x036CbD53842c5426634e7929541eC2318f3dCF7e` (Base Sepolia USDC)
+2. **Chainlink Forwarder address**: The Chainlink Forwarder contract address for Base Sepolia (required for CRE report validation)
+
+> [!NOTE]
+> **Finding the Forwarder Address**: Check the [CRE documentation](https://docs.chain.link/cre) for the correct Chainlink Forwarder address for Base Sepolia testnet. The forwarder address is required to ensure only verified CRE reports can call the contract's `onReport` function.
 
 You can use this <a href="https://remix.ethereum.org/?#activate=solidity,fileManager&gist=d09b0dabb744eafb373efea72bdc12b2&call=fileManager//open//gist-0fe90e825327ef313c88aedfe66ec142/gridMix4.sol" target="_blank" rel="noopener noreferrer">Remix IDE</a> link for this.
 
