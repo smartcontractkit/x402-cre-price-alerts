@@ -87,7 +87,7 @@ Before starting, ensure you have the following:
 
 Deploy `contracts/RuleRegistry.sol` to Base Sepolia. The constructor requires two parameters:
 1. **USDC token address**: `0x036CbD53842c5426634e7929541eC2318f3dCF7e` (Base Sepolia USDC)
-2. **Chainlink Forwarder address**: `0x82300bd7c3958625581cc2f77bc6464dcecdf3e5` (Base Sepolia CRE Simulation Forwarder)
+2. **Chainlink Forwarder address**: `0x82300bd7c3958625581cc2f77bc6464dcecdf3e5` ([Base Sepolia CRE Simulation Forwarder](https://docs.chain.link/cre/guides/workflow/using-evm-client/supported-networks-ts#understanding-forwarder-addresses))
 
 > [!NOTE]
 > **Finding the Forwarder Address**: Check the [CRE documentation](https://docs.chain.link/cre/guides/workflow/using-evm-client/supported-networks-ts) for the correct Chainlink Forwarder address for Base Sepolia testnet. The forwarder address is required to ensure only verified CRE reports can call the contract's `onReport` function.
