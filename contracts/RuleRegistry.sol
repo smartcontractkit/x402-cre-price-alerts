@@ -114,16 +114,16 @@ contract RuleRegistry is ReceiverTemplate {
 
     /**
      * @notice Initializes the RuleRegistry contract
-     * @dev Sets the owner to the deployer and configures USDC token address
-     * @dev Inherits from IReceiverTemplate with dummy values (validation disabled)
+     * @dev Sets the owner to the deployer and configures USDC token address and Chainlink Forwarder
      * @param _usdcToken Address of the USDC token contract (for x402 payments)
+     * @param _forwarderAddress Address of the Chainlink Forwarder contract (required for CRE report validation)
      * 
-     * @custom:note The IReceiverTemplate constructor parameters are set to dummy values
-     *             because this contract doesn't enforce strict workflow validation.
-     *             The CRE workflow can send reports without strict author/workflow checks.
+     * @custom:note The forwarder address is required for security - it ensures only verified CRE reports
+     *             are processed. Find the correct forwarder address for your network in the CRE documentation.
      */
-    constructor(address _usdcToken) ReceiverTemplate() {
+    constructor(address _usdcToken, address _forwarderAddress) ReceiverTemplate(_forwarderAddress) {
         require(_usdcToken != address(0), "RuleRegistry: USDC token address cannot be zero");
+        require(_forwarderAddress != address(0), "RuleRegistry: Forwarder address cannot be zero");
         usdcToken = _usdcToken;
     }
 
